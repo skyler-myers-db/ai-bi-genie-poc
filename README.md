@@ -56,11 +56,11 @@ This repo delivers a **1-click-ish** Databricks PoC that demonstrates governed, 
 # Create a serverless PRO warehouse with Photon (Medium; 15 min auto-stop)
 databricks warehouses create \
   --name genie_serverless_wh \
-  --cluster-size Medium \
+  --cluster-size "2X-Small" \
   --auto-stop-mins 15 \
   --enable-serverless-compute \
   --enable-photon \
   --warehouse-type PRO \
-  --max-num-clusters 10 \
-  --kind PREVIEW
+  --max-num-clusters 1 \
+  --spot-instance-policy COST_OPTIMIZED
 ```
