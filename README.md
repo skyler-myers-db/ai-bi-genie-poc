@@ -61,5 +61,6 @@ databricks warehouses create \
   --enable-serverless-compute \
   --enable-photon \
   --warehouse-type PRO \
-  --max-num-clusters 10
+  --max-num-clusters 10 \
+  --kind PREVIEW
 ```
