@@ -64,3 +64,45 @@ databricks warehouses create \
   --max-num-clusters 1 \
   --spot-instance-policy COST_OPTIMIZED
 ```
+
+Then capture its ID for later:
+
+```bash
+WH_ID=$(databricks warehouses list | awk -F' ' '/rm_serverless_wh/{print $1; exit}')
+echo $WH_ID
+```
+
+1) Bootstrap Unity Catalog namespaces & seed volume
+
+Open a SQL editor attached to `genie_serverless_wh` and run:
+
+```sql
+-- 1. Create catalog & schemas (idempotent)
+CREATE CATALOG IF NOT EXISTS genie_poc;
+USE CATALOG genie_poc;
+
+CREATE SCHEMA IF NOT EXISTS raw;
+CREATE SCHEMA IF NOT EXISTS bronze;
+CREATE SCHEMA IF NOT EXISTS silver;
+CREATE SCHEMA IF NOT EXISTS gold;
+CREATE SCHEMA IF NOT EXISTS ml;
+CREATE SCHEMA IF NOT EXISTS external;
+CREATE SCHEMA IF NOT EXISTS semantic;
+CREATE SCHEMA IF NOT EXISTS ops;
+
+-- 2. Create a UC Volume for seeds
+CREATE VOLUME IF NOT EXISTS raw.seed_vol COMMENT 'Seed files for PoC';
+```
+
+UC provides centralized governance for all these objects.  ￼
+
+2) Generate synthetic data (Parquet) into the UC Volume
+
+In a Notebook on Serverless Notebook compute (or all-Python job), run:
+
+```python
+%pip install faker numpy pandas pyarrow
+```
+
+Then run the generator:
+
