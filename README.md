@@ -1,29 +1,64 @@
-# Databricks AI/BI Genie PoC for Manufacturing Sales
+# AI/BI Genie PoC — Manufacturing Sales
 
-## Prerequisites (why this matters)
+This repo delivers a **1-click-ish** Databricks PoC that demonstrates governed, self-service analytics with **AI/BI Genie** over realistic manufacturing sales data (OSB/plywood/timber across multiple mills & regions).
 
-### Genie, AI/BI dashboards, metric views, Lakehouse Federation, Lakeflow Declarative Pipelines, and Serverless SQL warehouses are the backbone for governed NL analytics. Confirm entitlement & feature availability first to avoid dead-ends at demo time.
+---
 
-#### Workspace edition & governance
-* Unity Catalog enabled; you have Metastore Admin or equivalent to create catalogs/schemas, connections, and metric views.
-* AI/BI (dashboards + Genie) enabled. Genie spaces are configured from Catalog Explorer/Genie UI.  ￼
+## What you get
 
-#### Compute
-* Serverless SQL Warehouse available; we’ll create one named aibi-genie-wh (cluster size: Small, auto-stop 10 min). Photon is default/automatic on SQL warehouses.  ￼ ￼
+- Synthetic but realistic **Lakehouse** (Bronze/Silver/Gold) for:
+  - Sales orders (10–50M order lines, scalable)
+  - Inventory (by mill/SKU/day)
+  - Production (by mill/SKU/shift)
+  - Logistics (carrier, lead time, cost)
+- **Lakeflow Declarative Pipelines**: incremental loads, expectations (data quality), late-arrival tolerance, CDC-ready patterns.
+- **Unity Catalog Metric Views**: governed metrics (Net Sales, Units, ASP, GM%, OTD%, Inventory Turns, Mill Yield%, Region Fill Rate) with YAML definitions.
+- **AI/BI Dashboard** + linked **Genie Space** (Ask Genie button) for natural-language analytics.
+- **Lakehouse Federation** to ERP (PostgreSQL price list) + federated joins.
+- **Mosaic AI Model Serving**: tiny demand-forecast endpoint surfaced in dashboard & Genie prompts.
+- **Automation**: smoke tests, acceptance criteria, demo script. 
+- **Security/Governance**: CMK-backed Genie, lineage, audit queries.
 
-#### Security (recommended)
-* Customer-managed key (CMK) for managed services so Genie spaces and AI/BI dashboards are encrypted at rest (new dashboards after 2024-11-01; Genie spaces after 2025-04-10).  ￼ 
-￼
-#### CLI
-* Databricks CLI v0.218+ (for bundles & pipelines); authenticated (databricks auth login).  ￼
+---
 
-## What this creates
+## Prerequisites
 
-* UC catalog royomartin with schemas: raw, bronze, silver, gold, semantic, dashboards, ml.
-* A UC Volume for seed files and Genie knowledge store.
-* Lakeflow Declarative Pipeline (serverless) to land → transform → curate.
-* Metric Views in UC to centralize KPIs; used by both the dashboard and Genie.  ￼
-* AI/BI dashboard + published Genie space linked to it (Ask Genie from dashboard).  ￼
-* Lakehouse Federation connection to Postgres ERP price list + federated join.  ￼
-* Mosaic AI Model Serving endpoint for SKU/region demand forecast.  ￼
-* Auditability & lineage: AI/BI dashboard & Genie events in audit logs; lineage in Catalog Explorer.  ￼
+> Workspace & account requirements (validated against Databricks docs).
+
+- **Edition/Plan**: Premium or Enterprise; **Unity Catalog enabled** and set as default catalog. 
+- **Serverless SQL Warehouse** available in your region; **Photon** enabled.
+- **Entitlements & Permissions**
+  - User running setup: `ACCOUNT ADMIN` (to confirm serverless enablement if needed) or `WORKSPACE ADMIN`, plus **SQL access** and permission to create catalogs/schemas, warehouses, pipelines, and Genie spaces.
+  - Group **Sales-Analytics** exists (or adjust names) and can **USE CATALOG/SCHEMA**, **SELECT** on metric views, and **VIEW** dashboard & Genie space.
+- **CMK for Managed Services (optional but recommended)** to encrypt Genie/dashboard metadata (Enterprise). **Genie spaces created after Apr 10, 2025** & **dashboards created after Nov 1, 2024** are CMK-compatible.
+- **Databricks CLI (v0.216+)** configured (`databricks auth login`). **Asset Bundles** enabled (we use them to deploy Lakeflow).
+
+> Default names used throughout (feel free to change, but be consistent):
+
+- **Catalog**: `genie_poc`
+- **Schemas**: `raw`, `bronze`, `silver`, `gold`, `ml`, `external`, `semantic`, `ops`
+- **Warehouse**: `genie_serverless_wh` (Pro/Serverless, Medium)
+- **UC Volume** (seed files): `genie_poc.raw.seed_vol`
+- **Genie Space**: `Sales Analytics`
+- **Dashboard**: `Executive Sales (AI/BI)`
+- **Model**: `genie_poc.ml.units_forecast`
+- **Federation**: connection `erp_pg_conn`, foreign catalog `erp_pg`
+
+---
+
+## Quickstart (“near one-click”) — from a clean workspace
+
+> The following creates a Serverless SQL Warehouse (Photon), UC objects, seeds data, deploys Lakeflow, creates metric views, dashboard, Genie space, federation, and the model endpoint.
+
+### 0) Create a Serverless SQL Warehouse (Photon)
+
+```bash
+# Create a serverless PRO warehouse with Photon (Medium; 15 min auto-stop)
+databricks warehouses create \
+  --name genie_serverless_wh \
+  --cluster-size Medium \
+  --auto-stop-mins 15 \
+  --enable-serverless-compute \
+  --enable-photon \
+  --warehouse-type PRO
+```
