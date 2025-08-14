@@ -104,5 +104,19 @@ In a Notebook on Serverless Notebook compute (or all-Python job), run:
 %pip install faker numpy pandas pyarrow
 ```
 
-Then run the generator:
+Then run the data generator script
 
+---
+
+Create and invoke the model serving endpoint via REST:
+
+```bash
+databricks api --method POST --endpoint 2.0/serving-endpoints --json @models/serving/create_serving_endpoint.json
+```
+
+```bash
+curl -s -H "Authorization: Bearer $DATABRICKS_TOKEN" \
+ -H "Content-Type: application/json" \
+ -d '{"dataframe_records":[{"product_family":"OSB","region_name":"Southeast","horizon_months":1}]}' \
+ https://<workspace-url>/serving-endpoints/genie_poc-forecasting/invocations
+```
