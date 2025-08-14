@@ -1,0 +1,7 @@
+terms:
+  - term: Fill rate
+    definition: "Percentage of demand fulfilled at requested time window."
+  - term: Yield
+    definition: "Finished goods divided by raw input at the mill over time."
+  - term: Grade
+    definition: "Quality classification A/B/C"
