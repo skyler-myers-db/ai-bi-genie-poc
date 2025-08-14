@@ -60,5 +60,6 @@ databricks warehouses create \
   --auto-stop-mins 15 \
   --enable-serverless-compute \
   --enable-photon \
-  --warehouse-type PRO
+  --warehouse-type PRO \
+  --max-num-clusters 10
 ```
