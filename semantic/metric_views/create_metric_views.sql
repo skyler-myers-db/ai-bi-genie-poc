@@ -1,63 +1,96 @@
 USE CATALOG genie_poc;
+
 USE SCHEMA semantic;
 
-CREATE OR REPLACE VIEW sales_mv
-METRICS
-LANGUAGE YAML
-AS $$ 
--- paste YAML contents from sales_metrics.yaml here
+CREATE OR REPLACE VIEW sales_mv WITH METRICS LANGUAGE YAML AS
+$$
 version: 0.1
-source:
-  query: |
-    SELECT
-      fs.order_line_id,
-      fs.order_date,
-      fs.region_name,
-      fs.channel_name,
-      fs.mill_name,
-      fs.product_family,
-      fs.grade,
-      fs.qty,
-      fs.net_sales,
-      fs.cogs_total,
-      fs.gross_margin_pct,
-      fs.on_time_flag
-    FROM genie_poc.gold.fact_sales fs
+
+source: |
+  SELECT
+    fs.order_line_id,
+    fs.order_date,
+    fs.region_name,
+    fs.channel_name,
+    fs.mill_name,
+    fs.product_family,
+    fs.grade,
+    fs.qty,
+    fs.net_sales,
+    fs.cogs_total,
+    fs.on_time_flag
+  FROM genie_poc.gold.fact_sales fs
+
 joins: []
+
 dimensions:
-  - name: order_date
+  - name: "Order Name"
     expr: order_date
-    type: time
-    time_granularities: [day, month, quarter, year]
-  - name: region
+  - name: "Order Month"
+    expr: DATE_TRUNC('month', order_date)
+  - name: "Order Quarter"
+    expr: DATE_TRUNC('quarter', order_date)
+  - name: "Order Year"
+    expr: DATE_TRUNC('year', order_date)
+
+  - name: "Region"
     expr: region_name
-  - name: channel
+  - name: "Channel"
     expr: channel_name
-  - name: mill
+  - name: "Mill"
     expr: mill_name
-  - name: product_family
+  - name: "Product Family"
     expr: product_family
-  - name: grade
+  - name: "Grade"
     expr: grade
+
+# ---- Atomic measures (true aggregates) ----
 measures:
-  - name: net_sales
+  - name: "Total Net Sales"
     expr: SUM(net_sales)
-  - name: units_sold
+
+  - name: "Units Sold"
     expr: SUM(qty)
-  - name: avg_selling_price
-    expr: DIV0(SUM(net_sales), NULLIF(SUM(qty),0))
-  - name: gross_margin_pct
-    expr: DIV0(SUM(net_sales - cogs_total), NULLIF(SUM(net_sales),0))
-  - name: on_time_delivery_pct
-    expr: DIV0(SUM(CASE WHEN on_time_flag=1 THEN 1 ELSE 0 END), COUNT(*))
-filters:
-  - name: last_2_years
-    expr: order_date >= DATEADD(year, -2, CURRENT_DATE())
-metadata:
-  description: "Sales KPIs with product/mill/region/channel grain"
-  tags: ["governed","ai-bi","metric-view"]
+
+  - name: "Total Cogs"
+    expr: SUM(cogs_total)
+
+  - name: "On Time Count"
+    expr: SUM(CASE WHEN on_time_flag = 1 THEN 1 ELSE 0 END)
+
+  - name: "Order Lines"
+    expr: COUNT(*)
+
+# ---- Derived measures (reference prior measures with MEASURE()) ----
+  - name: "Average Selling Price"
+    expr: CASE
+            WHEN MEASURE(`Units Sold`) = 0 THEN 0
+            ELSE MEASURE(`Total Net Sales`) / MEASURE(`Units Sold`)
+          END
+
+  - name: "Gross Margin Percent"
+    expr: CASE
+            WHEN MEASURE(`Total Net Sales`) = 0 THEN 0
+            ELSE (MEASURE(`Total Net Sales`) - MEASURE(`Total Cogs`)) / MEASURE(`Total Net Sales`)
+          END
+
+  - name: "On Time Delivery Percent"
+    expr: CASE
+            WHEN MEASURE(`Order Lines`) = 0 THEN 0
+            ELSE MEASURE(`On Time Count`) / MEASURE(`Order Lines`)
+          END
+
+filter: order_date >= DATEADD(year, -2, CURRENT_DATE())
 $$;
+
+COMMENT ON VIEW sales_mv IS 'Sales KPIs with product/mill/region/channel grain';
+
+ALTER VIEW
+  sales_mv
+SET TBLPROPERTIES
+  ('tag.governed' = 'true', 'tag.ai-bi' = 'true', 'tag.metric-view' = 'true');
 
 -- Grants for governed self-service
 GRANT USAGE ON SCHEMA genie_poc.semantic TO `Sales-Analytics`;
+
 GRANT SELECT ON VIEW genie_poc.semantic.sales_mv TO `Sales-Analytics`;

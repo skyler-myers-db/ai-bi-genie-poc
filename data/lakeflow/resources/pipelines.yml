@@ -1,0 +1,25 @@
+resources:
+  pipelines:
+   rm_sales_pipeline:
+    name: pipeline_genie_poc_sales
+    configuration:
+      spark.sql.shuffle.partitions: auto
+    libraries:
+      - glob:
+          include: /Workspace/Users/${workspace.current_user.userName}/ai-bi-genie-poc/data/lakeflow/bronze_pipeline.sql
+      - glob:
+          include: /Workspace/Users/${workspace.current_user.userName}/ai-bi-genie-poc/data/lakeflow/silver_pipeline.sql
+      - glob:
+          include: /Workspace/Users/${workspace.current_user.userName}/ai-bi-genie-poc/data/lakeflow/gold_pipeline.sql
+    schema: gold
+    continuous: false
+    development: true
+    photon: true
+    channel: PREVIEW
+    catalog: genie_poc
+    serverless: true
+    event_log:
+      name: event_log_pipeline_genie_poc_sales
+      schema: ops
+      catalog: genie_poc
+    root_path: /Workspace/Users/${workspace.current_user.userName}/ai-bi-genie-poc/data/lakeflow

@@ -1,0 +1,15 @@
+resources:
+  jobs:
+    wf_genie_poc_sales:
+      name: wf_genie_poc_sales
+      timeout_seconds: 7200
+      tasks:
+        - task_key: task_bronze_pipeline
+          pipeline_task:
+            pipeline_id: ${resources.pipelines.rm_sales_pipeline.id}
+            full_refresh: true
+          max_retries: 2
+          min_retry_interval_millis: 120000
+          retry_on_timeout: true
+          timeout_seconds: 7200
+      performance_target: PERFORMANCE_OPTIMIZED
