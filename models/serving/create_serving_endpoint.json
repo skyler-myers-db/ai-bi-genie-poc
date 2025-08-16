@@ -5,7 +5,7 @@
       {
         "name": "naive-forecast",
         "entity_type": "MODEL",
-        "entity_name": "models:/NaiveForecaster/1",
+        "entity_name": "models:/SeasonalForecaster/1",
         "workload_size": "Small",
         "scale_to_zero_enabled": true
       }

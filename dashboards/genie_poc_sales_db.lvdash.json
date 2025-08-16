@@ -1,0 +1,875 @@
+{
+  "datasets": [
+    {
+      "name": "08db8f5c",
+      "displayName": "sales_mv",
+      "asset_name": "genie_poc.semantic.sales_mv"
+    },
+    {
+      "name": "1ede426d",
+      "displayName": "Top 20 Mills by Net Sales",
+      "queryLines": [
+        "SELECT\n",
+        "  mill_name,\n",
+        "  SUM(net_sales) net_sales\n",
+        "FROM\n",
+        "  genie_poc.gold.fact_sales\n",
+        "GROUP BY\n",
+        "  1\n",
+        "ORDER BY\n",
+        "  mill_name DESC\n",
+        "LIMIT 20;"
+      ]
+    },
+    {
+      "name": "02553413",
+      "displayName": "fact_logistics_gold",
+      "queryLines": [
+        "SELECT * FROM genie_poc.gold.fact_logistics_gold"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "a157281a",
+      "displayName": "Visualizations",
+      "layout": [
+        {
+          "widget": {
+            "name": "306945a0",
+            "queries": [
+              {
+                "name": "dashboards/01f07a311017143b9ed6ad7860fadab3/datasets/01f07a3132e21219901e30e5abd7d791_monthly(Order Month)",
+                "query": {
+                  "datasetName": "08db8f5c",
+                  "fields": [
+                    {
+                      "name": "monthly(Order Month)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `Order Month`)"
+                    },
+                    {
+                      "name": "monthly(Order Month)_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "monthly(Order Month)",
+                    "displayName": "Order Month",
+                    "queryName": "dashboards/01f07a311017143b9ed6ad7860fadab3/datasets/01f07a3132e21219901e30e5abd7d791_monthly(Order Month)"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 1,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "71afd356",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "08db8f5c",
+                  "fields": [
+                    {
+                      "name": "measure(Total Net Sales)",
+                      "expression": "MEASURE(`Total Net Sales`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(Total Net Sales)",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "USD",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    }
+                  },
+                  "displayName": "Total Net Sales"
+                }
+              },
+              "frame": {
+                "title": "Total Net Sales",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 3,
+            "width": 2,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "c8cb8879",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "08db8f5c",
+                  "fields": [
+                    {
+                      "name": "measure(Units Sold)",
+                      "expression": "MEASURE(`Units Sold`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(Units Sold)",
+                  "displayName": "Units Sold"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Units Sold"
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 3,
+            "width": 2,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "c4e90dd2",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "08db8f5c",
+                  "fields": [
+                    {
+                      "name": "measure(Average Selling Price)",
+                      "expression": "MEASURE(`Average Selling Price`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(Average Selling Price)",
+                  "format": {
+                    "type": "number-currency",
+                    "currencyCode": "USD",
+                    "abbreviation": "compact",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    }
+                  },
+                  "displayName": "Average Selling Price"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Average Selling Price"
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 3,
+            "width": 2,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "96a3d2df",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "08db8f5c",
+                  "fields": [
+                    {
+                      "name": "measure(Gross Margin Percent)",
+                      "expression": "MEASURE(`Gross Margin Percent`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(Gross Margin Percent)",
+                  "format": {
+                    "type": "number-percent",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    }
+                  },
+                  "displayName": "Gross Margin Percent"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Gross Margin"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 9,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "d7509fd5",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "08db8f5c",
+                  "fields": [
+                    {
+                      "name": "measure(On Time Delivery Percent)",
+                      "expression": "MEASURE(`On Time Delivery Percent`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "measure(On Time Delivery Percent)",
+                  "format": {
+                    "type": "number-percent",
+                    "decimalPlaces": {
+                      "type": "max",
+                      "places": 2
+                    }
+                  },
+                  "displayName": "On Time Delivery Percent"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "On Time Delivery"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 9,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "d020a767",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "08db8f5c",
+                  "fields": [
+                    {
+                      "name": "monthly(Order Month)",
+                      "expression": "DATE_TRUNC(\"MONTH\", `Order Month`)"
+                    },
+                    {
+                      "name": "measure(Total Net Sales)",
+                      "expression": "MEASURE(`Total Net Sales`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "monthly(Order Month)",
+                  "scale": {
+                    "type": "temporal"
+                  },
+                  "displayName": "Order Month"
+                },
+                "y": {
+                  "fieldName": "measure(Total Net Sales)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Total Net Sales"
+                }
+              },
+              "frame": {
+                "showTitle": true,
+                "title": "Net Sales By Month"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 15,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "511630fe",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "1ede426d",
+                  "fields": [
+                    {
+                      "name": "sum(net_sales)",
+                      "expression": "SUM(`net_sales`)"
+                    },
+                    {
+                      "name": "mill_name",
+                      "expression": "`mill_name`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "sum(net_sales)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Sum of net_sales"
+                },
+                "color": {
+                  "fieldName": "mill_name",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "mill_name"
+                },
+                "label": {
+                  "show": true
+                }
+              },
+              "frame": {
+                "title": "Net Sales by Mill",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 21,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "e8dc2205",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "08db8f5c",
+                  "fields": [
+                    {
+                      "name": "measure(Total Net Sales)",
+                      "expression": "MEASURE(`Total Net Sales`)"
+                    },
+                    {
+                      "name": "Product Family",
+                      "expression": "`Product Family`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "measure(Total Net Sales)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Total Net Sales"
+                },
+                "color": {
+                  "fieldName": "Product Family",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Product Family"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 21,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "5c32daaf",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "08db8f5c",
+                  "fields": [
+                    {
+                      "name": "Region",
+                      "expression": "`Region`"
+                    },
+                    {
+                      "name": "measure(On Time Delivery Percent)",
+                      "expression": "MEASURE(`On Time Delivery Percent`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "Region",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "Region"
+                },
+                "y": {
+                  "fieldName": "measure(On Time Delivery Percent)",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "On Time Delivery Percent"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 27,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "66c8f834",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "02553413",
+                  "fields": [
+                    {
+                      "name": "carrier",
+                      "expression": "`carrier`"
+                    },
+                    {
+                      "name": "min(lead_time_days)",
+                      "expression": "MIN(`lead_time_days`)"
+                    },
+                    {
+                      "name": "q1(lead_time_days)",
+                      "expression": "PERCENTILE(`lead_time_days`, 0.25)"
+                    },
+                    {
+                      "name": "median(lead_time_days)",
+                      "expression": "MEDIAN(`lead_time_days`)"
+                    },
+                    {
+                      "name": "q3(lead_time_days)",
+                      "expression": "PERCENTILE(`lead_time_days`, 0.75)"
+                    },
+                    {
+                      "name": "max(lead_time_days)",
+                      "expression": "MAX(`lead_time_days`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "widgetType": "box",
+              "encodings": {
+                "x": {
+                  "fieldName": "carrier",
+                  "scale": {
+                    "type": "categorical"
+                  },
+                  "displayName": "carrier"
+                },
+                "y": {
+                  "whiskerStart": {
+                    "fieldName": "min(lead_time_days)",
+                    "displayName": "Minimum lead_time_days"
+                  },
+                  "boxStart": {
+                    "fieldName": "q1(lead_time_days)",
+                    "displayName": "First Quartile of lead_time_days"
+                  },
+                  "boxMid": {
+                    "fieldName": "median(lead_time_days)",
+                    "displayName": "Median of lead_time_days"
+                  },
+                  "boxEnd": {
+                    "fieldName": "q3(lead_time_days)",
+                    "displayName": "Third Quartile of lead_time_days"
+                  },
+                  "whiskerEnd": {
+                    "fieldName": "max(lead_time_days)",
+                    "displayName": "Maximum lead_time_days"
+                  },
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "frame": {
+                "title": "Logistics lead-time box plot",
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 27,
+            "width": 3,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "1874030b",
+            "queries": [
+              {
+                "name": "dashboards/01f07a311017143b9ed6ad7860fadab3/datasets/01f07a3132e21219901e30e5abd7d791_Region",
+                "query": {
+                  "datasetName": "08db8f5c",
+                  "fields": [
+                    {
+                      "name": "Region",
+                      "expression": "`Region`"
+                    },
+                    {
+                      "name": "Region_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "Region",
+                    "displayName": "Region",
+                    "queryName": "dashboards/01f07a311017143b9ed6ad7860fadab3/datasets/01f07a3132e21219901e30e5abd7d791_Region"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 1,
+            "y": 2,
+            "width": 1,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "36c738d9",
+            "queries": [
+              {
+                "name": "dashboards/01f07a311017143b9ed6ad7860fadab3/datasets/01f07a3132e21219901e30e5abd7d791_Mill",
+                "query": {
+                  "datasetName": "08db8f5c",
+                  "fields": [
+                    {
+                      "name": "Mill",
+                      "expression": "`Mill`"
+                    },
+                    {
+                      "name": "Mill_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "Mill",
+                    "displayName": "Mill",
+                    "queryName": "dashboards/01f07a311017143b9ed6ad7860fadab3/datasets/01f07a3132e21219901e30e5abd7d791_Mill"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 2,
+            "y": 2,
+            "width": 1,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "36f1ecad",
+            "queries": [
+              {
+                "name": "dashboards/01f07a311017143b9ed6ad7860fadab3/datasets/01f07a3132e21219901e30e5abd7d791_Product Family",
+                "query": {
+                  "datasetName": "08db8f5c",
+                  "fields": [
+                    {
+                      "name": "Product Family",
+                      "expression": "`Product Family`"
+                    },
+                    {
+                      "name": "Product Family_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "Product Family",
+                    "displayName": "Product Family",
+                    "queryName": "dashboards/01f07a311017143b9ed6ad7860fadab3/datasets/01f07a3132e21219901e30e5abd7d791_Product Family"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 2,
+            "width": 1,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "0377c77a",
+            "queries": [
+              {
+                "name": "dashboards/01f07a311017143b9ed6ad7860fadab3/datasets/01f07a3132e21219901e30e5abd7d791_Channel",
+                "query": {
+                  "datasetName": "08db8f5c",
+                  "fields": [
+                    {
+                      "name": "Channel",
+                      "expression": "`Channel`"
+                    },
+                    {
+                      "name": "Channel_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "Channel",
+                    "displayName": "Channel",
+                    "queryName": "dashboards/01f07a311017143b9ed6ad7860fadab3/datasets/01f07a3132e21219901e30e5abd7d791_Channel"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 4,
+            "y": 2,
+            "width": 1,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "2c0bbb55",
+            "queries": [
+              {
+                "name": "dashboards/01f07a311017143b9ed6ad7860fadab3/datasets/01f07a3132e21219901e30e5abd7d791_Grade",
+                "query": {
+                  "datasetName": "08db8f5c",
+                  "fields": [
+                    {
+                      "name": "Grade",
+                      "expression": "`Grade`"
+                    },
+                    {
+                      "name": "Grade_associativity",
+                      "expression": "COUNT_IF(`associative_filter_predicate_group`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "widgetType": "filter-single-select",
+              "encodings": {
+                "fields": [
+                  {
+                    "fieldName": "Grade",
+                    "displayName": "Grade",
+                    "queryName": "dashboards/01f07a311017143b9ed6ad7860fadab3/datasets/01f07a3132e21219901e30e5abd7d791_Grade"
+                  }
+                ]
+              },
+              "frame": {
+                "showTitle": true
+              }
+            }
+          },
+          "position": {
+            "x": 5,
+            "y": 2,
+            "width": 1,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "ebaa9889",
+            "multilineTextboxSpec": {
+              "lines": [
+                "terms:\n",
+                "  - term: Fill rate\n",
+                "    definition: \"Percentage of demand fulfilled at requested time window.\"\n",
+                "  - term: Yield\n",
+                "    definition: \"Finished goods divided by raw input at the mill over time.\"\n",
+                "  - term: Grade\n",
+                "    definition: \"Quality classification A/B/C\"\n"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 6,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    }
+  }
+}

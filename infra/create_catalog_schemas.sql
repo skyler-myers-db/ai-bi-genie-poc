@@ -24,7 +24,11 @@ CREATE VOLUME IF NOT EXISTS raw.seed;
 
 CREATE VOLUME IF NOT EXISTS dashboards.knowledge_store;
 
+CREATE VOLUME IF NOT EXISTS genie_poc.ml.forecast_artifacts COMMENT 'ML artifacts for seasonal forecaster (governed by Unity Catalog)';
+
 -- Privileges: allow analytics group to use this catalog & read semantic layer
 GRANT USAGE ON CATALOG genie_poc TO `Sales-Analytics`;
 
 GRANT USAGE ON SCHEMA genie_poc.semantic TO `Sales-Analytics`;
+
+GRANT READ FILES, WRITE FILES ON VOLUME genie_poc.ml.forecast_artifacts TO `Sales-Analytics`;
